@@ -175,7 +175,7 @@
       if (!configured) {
         this.mode = "local";
         this.status = "Modo local";
-        this.error = "Firebase no está configurado. Los registros se guardan solo en este dispositivo.";
+        this.error = "El servicio en la nube no está configurado. Los registros se guardan solo en este dispositivo.";
         this._bindLocalSync();
         localEmit();
         return Promise.resolve(this);
@@ -199,7 +199,7 @@
           .catch(function () { /* algunos navegadores lo bloquean en file:// */ });
 
         this.mode = "firebase";
-        this.status = "Firebase conectado";
+        this.status = "Sincronizado";
         this.error = null;
 
         // Los listeners de la base de datos se activan sólo cuando hay
@@ -216,7 +216,7 @@
       } catch (err) {
         this.mode = "local";
         this.status = "Modo local (respaldo)";
-        this.error = "No se pudo iniciar Firebase (" + err.message + "). Se usará el modo local.";
+        this.error = "No se pudo iniciar el servicio en la nube (" + err.message + "). Se usará el modo local.";
         console.error(err);
         this._bindLocalSync();
         localEmit();
@@ -406,7 +406,7 @@
     onChange: function (cb) { authListeners.push(cb); return cb; },
 
     signIn: function (email, pass) {
-      if (Store.mode !== "firebase") return Promise.reject(new Error("Autenticación no disponible: Firebase no está configurado."));
+      if (Store.mode !== "firebase") return Promise.reject(new Error("Autenticación no disponible: el servicio en la nube no está configurado."));
       return auth.signInWithEmailAndPassword(email, pass).then(function (cred) {
         return Auth.refreshProfile().then(function () { return cred.user; });
       });
@@ -418,7 +418,7 @@
     },
 
     sendReset: function (email) {
-      if (Store.mode !== "firebase") return Promise.reject(new Error("Requiere Firebase configurado."));
+      if (Store.mode !== "firebase") return Promise.reject(new Error("Requiere el servicio en la nube configurado."));
       return auth.sendPasswordResetEmail(email);
     }
   };

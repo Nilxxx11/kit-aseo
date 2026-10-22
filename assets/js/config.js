@@ -11,7 +11,6 @@ window.APP_CONFIG = {
   },
 
   forma: {
-    codigo: "FT-SV-016",
     version: "1",
     fecha: "19/10/2026",
     titulo: "Inspección de kit de aseo de vehículos",

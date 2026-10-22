@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inspección kit de aseo · FT-SV-016</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f4f1;--card:#fff;--ink:#1b2a2e;--mute:#5d6b6f;--line:#d5dad6;--ok:#17695f;--okbg:#dcefea;--bad:#b3261e;--badbg:#f8dedb;--na:#6a6f73;--nabg:#e8eaea;--warn:#8a5a00;--warnbg:#fbeccb;--acc:#1b2a2e;--accink:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12191b;--card:#1b2528;--ink:#e8eeee;--mute:#9aa9ac;--line:#31403f;--ok:#6fd0c0;--okbg:#17342f;--bad:#ff8f86;--badbg:#42201d;--na:#b4babd;--nabg:#2a3436;--warn:#f0c264;--warnbg:#3b2f12;--acc:#e8eeee;--accink:#12191b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12191b;--card:#1b2528;--ink:#e8eeee;--mute:#9aa9ac;--line:#31403f;--ok:#6fd0c0;--okbg:#17342f;--bad:#ff8f86;--badbg:#42201d;--na:#b4babd;--nabg:#2a3436;--warn:#f0c264;--warnbg:#3b2f12;--acc:#e8eeee;--accink:#12191b;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Archivo",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+header.top{border:2px solid var(--ink);border-radius:6px;background:var(--card);display:grid;grid-template-columns:1fr auto;margin-bottom:16px}
+header.top .t{padding:14px 16px}
+header.top h1{margin:0;font-size:1.3rem;font-weight:800;line-height:1.2}
+header.top p{margin:4px 0 0;color:var(--mute);font-size:.9rem}
+header.top .c{border-left:2px solid var(--ink);padding:14px 16px;font-size:.85rem;line-height:1.6;white-space:nowrap}
+nav{display:flex;gap:4px;margin-bottom:16px;border-bottom:2px solid var(--ink)}
+nav button{flex:1;padding:12px;border:0;background:none;font:600 1rem inherit;font-family:inherit;color:var(--mute);cursor:pointer;border-radius:6px 6px 0 0}
+nav button[aria-selected="true"]{background:var(--acc);color:var(--accink)}
+section.panel{display:none}section.panel.on{display:block}
+fieldset{border:1px solid var(--line);background:var(--card);border-radius:6px;padding:16px;margin:0 0 16px}
+legend{font-weight:800;padding:0 6px;font-size:1.05rem}
+label.f{display:block;font-weight:600;font-size:.92rem;margin-bottom:12px}
+label.f:last-child{margin-bottom:0}
+input[type=text],input[type=date],textarea,select{width:100%;margin-top:4px;padding:10px 12px;border:1.5px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+textarea{min-height:76px;resize:vertical}
+input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-visible,summary:focus-visible,.seg input:focus-visible+span{outline:3px solid var(--warn);outline-offset:2px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.item{border-top:1px solid var(--line);padding:14px 0}
+.item:first-of-type{border-top:0;padding-top:0}
+.item h3{margin:0;font-size:1.05rem}
+.item .crit{margin:2px 0 10px;color:var(--mute);font-size:.88rem}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
+.seg label{position:relative;cursor:pointer}
+.seg input{position:absolute;opacity:0;inset:0}
+.seg span{display:block;text-align:center;padding:10px 4px;border:1.5px solid var(--line);border-radius:6px;font-weight:600;font-size:.9rem;background:var(--bg)}
+.seg input:checked+span.s-c{background:var(--okbg);border-color:var(--ok);color:var(--ok)}
+.seg input:checked+span.s-n{background:var(--badbg);border-color:var(--bad);color:var(--bad)}
+.seg input:checked+span.s-a{background:var(--nabg);border-color:var(--na);color:var(--na)}
+.fix{border:1px dashed var(--bad);border-radius:6px;padding:12px;margin-bottom:12px;background:var(--badbg)}
+.fix h4{margin:0 0 8px;color:var(--bad)}
+.btn{font:700 1rem inherit;font-family:inherit;padding:12px 18px;border-radius:6px;border:2px solid var(--ink);background:var(--acc);color:var(--accink);cursor:pointer}
+.btn.sec{background:transparent;color:var(--ink)}
+.btn.sm{padding:7px 12px;font-size:.88rem}
+.btn.danger{border-color:var(--bad);color:var(--bad);background:transparent}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.err{color:var(--bad);font-weight:600;margin:0 0 12px;min-height:1.4em}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px 12px}
+.stat b{display:block;font-size:1.6rem;line-height:1.1}
+.stat small{color:var(--mute)}
+.filters{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.rec{background:var(--card);border:1px solid var(--line);border-radius:6px;margin-bottom:10px;border-left-width:6px}
+.rec.ok{border-left-color:var(--ok)}.rec.open{border-left-color:var(--bad)}.rec.done{border-left-color:var(--warn)}
+.rec summary{list-style:none;cursor:pointer;padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:2px 8px}
+.rec summary::-webkit-details-marker{display:none}
+.rec .pl{font-weight:800;font-size:1.1rem}
+.rec .meta{color:var(--mute);font-size:.88rem;grid-column:1}
+.pill{align-self:start;grid-row:1/3;grid-column:2;padding:3px 10px;border-radius:99px;font-weight:700;font-size:.8rem}
+.pill.ok{background:var(--okbg);color:var(--ok)}.pill.open{background:var(--badbg);color:var(--bad)}.pill.done{background:var(--warnbg);color:var(--warn)}
+.rec .body{padding:0 14px 14px;font-size:.92rem}
+.rec table{width:100%;border-collapse:collapse;margin:8px 0}
+.rec th,.rec td{text-align:left;padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.rec th{color:var(--mute);font-weight:600;font-size:.82rem}
+.empty{text-align:center;color:var(--mute);padding:32px 12px;border:1.5px dashed var(--line);border-radius:6px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--acc);color:var(--accink);padding:10px 18px;border-radius:6px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+@media (max-width:520px){header.top{grid-template-columns:1fr}header.top .c{border-left:0;border-top:2px solid var(--ink);white-space:normal}.g2,.filters{grid-template-columns:1fr}}
+@media print{nav,.noprint,.btn{display:none!important}body{background:#fff;color:#000}.rec .body{display:block}}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="t"><h1>Inspección kit de aseo de vehículos</h1><p>Plan Estratégico de Seguridad Vial</p></div>
+  <div class="c">Código: FT-SV-016<br>Versión: 1<br>Fecha: 19/10/2026</div>
+</header>
+<nav role="tablist">
+  <button role="tab" id="tab-n" aria-selected="true" data-p="nueva">Nueva inspección</button>
+  <button role="tab" id="tab-r" aria-selected="false" data-p="registros">Registros <span id="cnt"></span></button>
+</nav>
+
+<section class="panel on" id="nueva">
+<form id="frm" novalidate>
+  <fieldset><legend>Datos generales</legend>
+    <div class="g2">
+      <label class="f">Fecha de la inspección<input type="date" id="fecha" required></label>
+      <label class="f">Placa / vehículo<input type="text" id="placa" required autocapitalize="characters" placeholder="Ej. ABC123"></label>
+    </div>
+    <label class="f">Responsable de la inspección<input type="text" id="resp" required autocomplete="name"></label>
+    <label class="f">Nombre del conductor inspeccionado<input type="text" id="cond" required autocomplete="off"></label>
+  </fieldset>
+  <fieldset><legend>Elementos a inspeccionar</legend>
+    <div id="items"></div>
+  </fieldset>
+  <fieldset id="accWrap" hidden><legend>Acciones correctivas</legend>
+    <div id="acc"></div>
+  </fieldset>
+  <fieldset><legend>Observaciones</legend>
+    <label class="f">Observaciones generales<textarea id="obs"></textarea></label>
+  </fieldset>
+  <p class="err" id="err" role="alert"></p>
+  <div class="row"><button class="btn" type="submit">Guardar inspección</button><button class="btn sec" type="button" id="reset">Limpiar formulario</button></div>
+</form>
+</section>
+
+<section class="panel" id="registros">
+  <div class="stats"><div class="stat"><b id="s-t">0</b><small>Inspecciones</small></div><div class="stat"><b id="s-o">0</b><small>Con acciones abiertas</small></div><div class="stat"><b id="s-c">0</b><small>Conformes</small></div></div>
+  <div class="filters noprint">
+    <input type="text" id="q" placeholder="Buscar placa, conductor o responsable" aria-label="Buscar">
+    <select id="fs" aria-label="Filtrar por estado"><option value="">Todos los estados</option><option value="ok">Conforme</option><option value="open">Acciones abiertas</option><option value="done">Acciones cerradas</option></select>
+  </div>
+  <div class="row noprint" style="margin-bottom:12px"><button class="btn sec sm" id="copy">Copiar CSV</button><button class="btn sec sm" id="print">Imprimir</button></div>
+  <div id="list"></div>
+</section>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const ITEMS=[
+ {n:"Escoba",c:"En buen estado, limpia, con cerdas completas y mango firme"},
+ {n:"Trapero",c:"Limpio, en buen estado, con fibras completas y mango firme"},
+ {n:"Recogedor",c:"Íntegro, limpio, sin fisuras ni fugas, con asa en buen estado (si aplica)"},
+ {n:"Balde",c:"En buen estado, limpio, manija de agarre en buen estado"}
+];
+const KEY="ft-sv-016:registros";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const today=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
+const fmt=d=>d?d.split("-").reverse().join("/"):"—";
+let db=[];
+try{db=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){db=[]}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){toast("No se pudo guardar en este navegador")}}
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("on"),2200)}
+
+/* Tabs */
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>show(b.dataset.p));
+function show(p){
+  document.querySelectorAll("nav button").forEach(b=>b.setAttribute("aria-selected",b.dataset.p===p));
+  document.querySelectorAll(".panel").forEach(s=>s.classList.toggle("on",s.id===p));
+  if(p==="registros")render();
+  try{history.replaceState(null,"","#"+p)}catch(e){}
+}
+
+/* Formulario */
+function buildItems(){
+  $("items").innerHTML=ITEMS.map((it,i)=>`<div class="item"><h3>${it.n}</h3><p class="crit">${it.c}</p>
+  <div class="seg" role="radiogroup" aria-label="Estado de ${it.n}">
+   <label><input type="radio" name="e${i}" value="Cumple"><span class="s-c">Cumple</span></label>
+   <label><input type="radio" name="e${i}" value="No cumple"><span class="s-n">No cumple</span></label>
+   <label><input type="radio" name="e${i}" value="No aplica"><span class="s-a">No aplica</span></label></div>
+  <input type="text" id="o${i}" placeholder="Observaciones (opcional)" aria-label="Observaciones de ${it.n}"></div>`).join("");
+  document.querySelectorAll("#items input[type=radio]").forEach(r=>r.onchange=syncAcc);
+}
+const estado=i=>(document.querySelector(`input[name=e${i}]:checked`)||{}).value||"";
+function syncAcc(){
+  const keep={};
+  document.querySelectorAll("#acc .fix").forEach(f=>{keep[f.dataset.i]={a:f.querySelector(".a").value,d:f.querySelector(".d").value,r:f.querySelector(".r").value}});
+  const bad=ITEMS.map((_,i)=>i).filter(i=>estado(i)==="No cumple");
+  $("accWrap").hidden=!bad.length;
+  $("acc").innerHTML=bad.map(i=>{const k=keep[i]||{};return `<div class="fix" data-i="${i}"><h4>${ITEMS[i].n}</h4>
+   <label class="f">Acción correctiva<input type="text" class="a" value="${esc(k.a)}"></label>
+   <div class="g2"><label class="f">Fecha de cierre<input type="date" class="d" value="${esc(k.d)}"></label>
+   <label class="f">Responsable<input type="text" class="r" value="${esc(k.r)}"></label></div></div>`}).join("");
+}
+function resetForm(){
+  $("frm").reset();$("fecha").value=today();$("err").textContent="";syncAcc();
+}
+$("reset").onclick=resetForm;
+$("frm").onsubmit=e=>{
+  e.preventDefault();
+  const err=m=>{$("err").textContent=m;toast("Revisa el formulario")};
+  const v=id=>$(id).value.trim();
+  if(!$("fecha").value||!v("placa")||!v("resp")||!v("cond"))return err("Completa fecha, placa, responsable y conductor.");
+  const falta=ITEMS.find((_,i)=>!estado(i));
+  if(falta)return err("Marca el estado de: "+falta.n+".");
+  const acciones=[...document.querySelectorAll("#acc .fix")].map(f=>({elemento:ITEMS[f.dataset.i].n,accion:f.querySelector(".a").value.trim(),cierre:f.querySelector(".d").value,responsable:f.querySelector(".r").value.trim()}));
+  const sin=acciones.find(a=>!a.accion);
+  if(sin)return err("Describe la acción correctiva de: "+sin.elemento+".");
+  db.unshift({id:Date.now(),fecha:$("fecha").value,placa:v("placa").toUpperCase(),responsable:v("resp"),conductor:v("cond"),
+    items:ITEMS.map((it,i)=>({elemento:it.n,estado:estado(i),obs:v("o"+i)})),acciones,obs:v("obs"),cerrada:false,fechaCierre:""});
+  persist();resetForm();toast("Inspección guardada");show("registros");
+};
+
+/* Registros */
+const st=r=>!r.acciones.length?"ok":r.cerrada?"done":"open";
+const stTxt={ok:"Conforme",open:"Acciones abiertas",done:"Acciones cerradas"};
+function render(){
+  $("cnt").textContent=db.length?`(${db.length})`:"";
+  $("s-t").textContent=db.length;
+  $("s-o").textContent=db.filter(r=>st(r)==="open").length;
+  $("s-c").textContent=db.filter(r=>st(r)==="ok").length;
+  const q=$("q").value.trim().toLowerCase(),f=$("fs").value;
+  const rows=db.filter(r=>(!f||st(r)===f)&&(!q||[r.placa,r.conductor,r.responsable].join(" ").toLowerCase().includes(q)));
+  if(!rows.length){$("list").innerHTML=`<div class="empty">${db.length?"Ninguna inspección coincide con el filtro.":"Aún no hay inspecciones. Registra la primera en “Nueva inspección”."}</div>`;return}
+  $("list").innerHTML=rows.map(r=>{const s=st(r);return `<details class="rec ${s}"><summary><span class="pl">${esc(r.placa)}</span><span class="pill ${s}">${stTxt[s]}</span>
+  <span class="meta">${fmt(r.fecha)} · Conductor: ${esc(r.conductor)}</span></summary><div class="body">
+  <p style="margin:0 0 6px">Responsable: <b>${esc(r.responsable)}</b></p>
+  <table><tr><th>Elemento</th><th>Estado</th><th>Observaciones</th></tr>${r.items.map(i=>`<tr><td>${esc(i.elemento)}</td><td>${esc(i.estado)}</td><td>${esc(i.obs)||"—"}</td></tr>`).join("")}</table>
+  ${r.acciones.length?`<b>Acciones correctivas</b><table><tr><th>Elemento</th><th>Acción</th><th>Cierre</th><th>Responsable</th></tr>${r.acciones.map(a=>`<tr><td>${esc(a.elemento)}</td><td>${esc(a.accion)}</td><td>${fmt(a.cierre)}</td><td>${esc(a.responsable)||"—"}</td></tr>`).join("")}</table>`:""}
+  ${r.obs?`<p>Observaciones: ${esc(r.obs)}</p>`:""}
+  ${r.cerrada?`<p>Acciones cerradas el ${fmt(r.fechaCierre)}.</p>`:""}
+  <div class="row noprint">${s==="open"?`<button class="btn sm" data-a="close" data-id="${r.id}">Marcar acciones como cerradas</button>`:""}<button class="btn danger sm" data-a="del" data-id="${r.id}">Eliminar</button></div></div></details>`}).join("");
+}
+$("list").onclick=e=>{
+  const b=e.target.closest("button[data-a]");if(!b)return;
+  const r=db.find(x=>x.id==b.dataset.id);if(!r)return;
+  if(b.dataset.a==="close"){r.cerrada=true;r.fechaCierre=today();toast("Acciones cerradas")}
+  else{if(b.dataset.c!=="1"){b.dataset.c="1";b.textContent="Toca otra vez para confirmar";return}
+    db=db.filter(x=>x!==r);toast("Inspección eliminada")}
+  persist();render();
+};
+$("q").oninput=render;$("fs").onchange=render;
+$("print").onclick=()=>{document.querySelectorAll(".rec").forEach(d=>d.open=true);try{window.print()}catch(e){toast("Imprimir no está disponible aquí")}};
+$("copy").onclick=async()=>{
+  const q=v=>`"${String(v??"").replace(/"/g,'""')}"`;
+  const head=["Fecha","Placa","Conductor","Responsable","Escoba","Trapero","Recogedor","Balde","Estado seguimiento","Acciones correctivas","Observaciones"];
+  const lines=db.map(r=>[fmt(r.fecha),r.placa,r.conductor,r.responsable,...ITEMS.map(it=>(r.items.find(i=>i.elemento===it.n)||{}).estado),stTxt[st(r)],r.acciones.map(a=>a.elemento+": "+a.accion).join(" | "),r.obs].map(q).join(","));
+  const csv=[head.map(q).join(","),...lines].join("\n");
+  try{await navigator.clipboard.writeText(csv);toast("CSV copiado: pégalo en Excel")}
+  catch(e){const t=document.createElement("textarea");t.value=csv;document.body.appendChild(t);t.select();let ok=false;try{ok=document.execCommand("copy")}catch(x){}t.remove();toast(ok?"CSV copiado: pégalo en Excel":"No se pudo copiar")}
+};
+
+buildItems();resetForm();
+if(location.hash==="#registros")show("registros");else render();
+</script>
+</body>
+</html>

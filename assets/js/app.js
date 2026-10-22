@@ -47,10 +47,10 @@
     $("brandName").textContent = emp.nombre || "HB";
     $("brandSlogan").textContent = emp.eslogan || "";
     $("brandTag").textContent = emp.nombreCompleto && emp.nombreCompleto !== emp.nombre ? emp.nombreCompleto : (CFG.forma.subtitulo || "");
-    $("pageSub").textContent = (CFG.forma.titulo || "Inspección") + " · " + (CFG.forma.codigo || "FT-SV-016");
+    $("pageSub").textContent = CFG.forma.titulo || "Inspección del kit de aseo de vehículos";
     var logo = $("brandLogo");
     if (emp.logo) logo.src = emp.logo;
-    if (emp.nombre) document.title = emp.nombre + " · " + (CFG.forma.codigo || "Inspección de kit de aseo");
+    if (emp.nombre) document.title = emp.nombre + " · Inspección de kit de aseo";
   }
 
   /* ============================================================
@@ -453,12 +453,9 @@
     $("cfgName").value = (CFG.empresa && CFG.empresa.nombre) || "";
     $("cfgFull").value = (CFG.empresa && CFG.empresa.nombreCompleto) || "";
     $("cfgSlogan").value = (CFG.empresa && CFG.empresa.eslogan) || "";
-    $("cfgCode").value = (CFG.forma && CFG.forma.codigo) || "";
     $("cfgStatus").innerHTML =
-      "<b>Almacenamiento:</b> " + (Store.mode === "firebase" ? "Firebase Realtime Database" : "Local (este dispositivo)") + "<br>" +
-      "<b>Autenticación:</b> " + (Store.mode === "firebase" ? "Firebase Authentication (correo y contraseña)" : "No configurada") + "<br>" +
-      "<b>Proyecto:</b> " + (CFG.firebase && CFG.firebase.projectId && CFG.firebase.projectId.indexOf("PEG_AQUI") !== 0 ? CFG.firebase.projectId : "—") + "<br>" +
-      "<b>Reglas:</b> " + (Store.mode === "firebase" ? "ver database.rules.json" : "no aplican");
+      "<b>Almacenamiento:</b> " + (Store.mode === "firebase" ? "Nube (sincronizado)" : "Este dispositivo") + "<br>" +
+      "<b>Autenticación:</b> " + (Store.mode === "firebase" ? "Correo y contraseña" : "No configurada");
   }
 
   function onAdminTableClick(e) {
@@ -486,7 +483,7 @@
       "auth/weak-password": "La contraseña es demasiado débil (mínimo 6 caracteres).",
       "auth/email-already-in-use": "Ese correo ya está registrado.",
       "auth/network-request-failed": "Error de red. Revisa la conexión.",
-      "auth/operation-not-allowed": "Activa el proveedor Correo/Contraseña en Firebase Authentication."
+      "auth/operation-not-allowed": "Activa el inicio de sesión con correo y contraseña."
     };
     return map[code] || (ex && ex.message ? ex.message : "Error inesperado");
   }
@@ -499,7 +496,7 @@
         eslogan: $("cfgSlogan").value.trim(),
         logo: CFG.empresa.logo
       },
-      forma: Object.assign({}, CFG.forma, { codigo: $("cfgCode").value.trim() || "FT-SV-016" })
+      forma: CFG.forma
     };
     Store.setConfig(cfg).then(function () {
       CFG.empresa = cfg.empresa;
@@ -604,39 +601,16 @@
      Banners / estado
      ============================================================ */
   function renderBanners() {
-    var html = "";
-    if (Store.mode === "local") {
-      html = '<div class="banner warn"><span class="ico">⚠️</span><div><b>Modo local activo.</b> ' +
-        "Los registros se guardan únicamente en este dispositivo. Configura Firebase en <code>assets/js/config.js</code> " +
-        "para sincronizar entre equipos y habilitar el panel de administración." +
-        '<div style="margin-top:6px;opacity:.85">En modo local la app funciona como unstandalone de captura: ' +
-        "el formulario es público y este dispositivo guarda también el historial y los reportes.</div>" +
-        '<div class="row" style="margin-top:8px"><a class="btn sec sm" href="README.md" target="_blank" rel="noopener">Ver guía de configuración</a></div>' +
-        "</div></div>";
-    } else if (Store.error) {
-      html = '<div class="banner bad"><span class="ico">⛔</span><div><b>Error de conexión con Firebase.</b> ' + esc(Store.error) + "</div></div>";
-    } else {
-      var u = Auth.current();
-      var admin = Auth.isAdmin();
-      if (!u) {
-        html = '<div class="banner ok"><span class="ico">📝</span><div><b>Formulario público.</b> ' +
-          "Cualquier persona puede registrar una inspección sin iniciar sesión. " +
-          "El <b>administrador</b> es la única cuenta del sistema y accede al historial, los reportes y la exportación a Excel." +
-          '<div class="row" style="margin-top:8px"><button class="btn primary sm" data-a="openLogin">Entrar como administrador</button></div>' +
-          "</div></div>";
-      } else {
-        html = '<div class="banner ok"><span class="ico">☁️</span><div><b>Sincronización activa.</b> ' +
-          "Sesión de <b>" + esc(u.nombre) + "</b> (administrador): acceso completo a inspecciones, reportes y administración." +
-          "</div></div>";
-      }
-    }
+    var html = (Store.mode === "firebase" && Store.error)
+      ? '<div class="banner bad"><span class="ico">⛔</span><div><b>Error de conexión con el servidor.</b> ' + esc(Store.error) + "</div></div>"
+      : "";
     ["bannerZone", "bannerZone2", "bannerZone3", "bannerZone4"].forEach(function (id) {
       var el = $(id); if (el) el.innerHTML = html;
     });
 
     var mp = $("modePill");
     if (mp) {
-      mp.textContent = Store.mode === "firebase" ? "Firebase" : "Local";
+      mp.textContent = Store.mode === "firebase" ? "En línea" : "Local";
       mp.className = "pill " + (Store.mode === "firebase" ? "ok" : "na");
     }
   }

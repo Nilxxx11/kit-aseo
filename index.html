@@ -3,15 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Aplicación corporativa de inspección de kits de aseo de vehículos — Plan Estratégico de Seguridad Vial">
+<meta name="description" content="Aplicación corporativa de inspección de kits de aseo de vehículos — Plan Estratégico de Seguridad Vial.">
 <meta name="theme-color" content="#0060b0">
+<meta http-equiv="Cache-Control" content="no-store">
+<meta http-equiv="Pragma" content="no-cache">
 <title>Inspección kit de aseo</title>
 
 <link rel="icon" href="assets/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/app.css?v=20261022d">
 
 <!-- Firebase (SDK compat, funciona con file:// y con hosting) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js" defer></script>
@@ -21,11 +23,11 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" defer></script>
 
-<script src="assets/js/config.js" defer></script>
-<script src="assets/js/store.js" defer></script>
-<script src="assets/js/xlsx-export.js" defer></script>
-<script src="assets/js/dashboard.js" defer></script>
-<script src="assets/js/app.js" defer></script>
+<script src="assets/js/config.js?v=20261022d" defer></script>
+<script src="assets/js/store.js?v=20261022d" defer></script>
+<script src="assets/js/xlsx-export.js?v=20261022d" defer></script>
+<script src="assets/js/dashboard.js?v=20261022d" defer></script>
+<script src="assets/js/app.js?v=20261022d" defer></script>
 </head>
 <body>
 
@@ -106,7 +108,6 @@
         <div class="card">
           <div class="card-h">
             <h2>Inspección de kit de aseo de vehículos</h2>
-            <span class="pill info">...</span>
             <span class="sub">Plan Estratégico de Seguridad Vial</span>
           </div>
           <div class="card-b">
@@ -310,7 +311,6 @@
           <div class="card-b center" style="padding:40px 20px">
             <div style="font-size:2.4rem">🔒</div>
             <h2 style="margin:8px 0 6px">Acceso restringido</h2>
-            <p class="muted" style="max-width:520px;margin:0 auto 16px">Esta sección requiere una cuenta con rol <b>administrador</b>. Inicia sesión con un usuario administrador para ver y descargar todos los registros en Excel.</p>
             <button class="btn" id="btnLoginAdmin">Iniciar sesión como administrador</button>
           </div>
         </div>
@@ -362,7 +362,6 @@
                 <label class="f">Nombre corto de la empresa<input type="text" id="cfgName" placeholder="HB"></label>
                 <label class="f">Nombre completo<input type="text" id="cfgFull" placeholder="Higiene Básica"></label>
                 <label class="f">Eslogan<input type="text" id="cfgSlogan" placeholder="Avanzamos contigo"></label>
-                <label class="f">Código de la forma<input type="text" id="cfgCode" placeholder="..."></label>
                 <div class="row">
                   <button class="btn sm" id="btnSaveCfg">Guardar configuración</button>
                   <span class="small muted" id="cfgMsg"></span>
@@ -376,10 +375,8 @@
             <div class="card">
               <div class="card-h"><h2>Acceso del administrador</h2><span class="sub">Única cuenta del sistema</span></div>
               <div class="card-b">
-                <p class="small muted" style="margin-top:0">
-                 .....
-                </p>
                 <div class="row">
+                  <button class="btn primary sm" id="btnLoginAdmin2">Iniciar sesión de administrador</button>
                   <span class="small muted" id="adminInfo"></span>
                 </div>
               </div>
@@ -418,9 +415,8 @@
   <div class="box">
     <h3 id="loginTitle">Acceso del administrador</h3>
     <div class="mb">
-      <p class="small muted" style="margin-bottom:14px">El formulario de inspección es <b>público</b>: cualquiera puede registrar un kit. Esta cuenta es la única que puede ver el historial, los reportes y exportar a Excel.</p>
-      <label class="f">Correo electrónico<input type="email" id="liEmail" autocomplete="username" placeholder=""></label>
-      <label class="f">Contraseña<input type="password" id="liPass" autocomplete="current-password" placeholder=""></label>
+      <label class="f">Correo electrónico<input type="email" id="liEmail" autocomplete="username" placeholder="admin@empresa.com"></label>
+      <label class="f">Contraseña<input type="password" id="liPass" autocomplete="current-password" placeholder="••••••••"></label>
       <p class="err-msg" id="liErr"></p>
     </div>
     <div class="mf">
