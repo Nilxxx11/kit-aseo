@@ -1,0 +1,27 @@
+{
+  "database": {
+    "rules": "database.rules.json"
+  },
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "**/.*",
+      "**/node_modules/**",
+      "scripts/**",
+      "package.json",
+      "package-lock.json",
+      "database.rules.json",
+      "firebase.json",
+      "service-account.json",
+      "README.md"
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(js|css|png|jpg|svg|woff2)",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=3600" }
+        ]
+      }
+    ]
+  }
+}

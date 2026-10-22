@@ -1,0 +1,47 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "inspecciones": {
+      ".read": "auth != null && root.child('usuarios').child(auth.uid).child('rol').val() === 'admin'",
+      ".indexOn": ["fecha", "placa", "autorUid", "creadoEn"],
+      "$id": {
+        ".write": "(auth != null && root.child('usuarios').child(auth.uid).child('rol').val() === 'admin') || (!data.exists() && newData.exists() && (newData.child('autorUid').val() === 'publico' || (auth != null && newData.child('autorUid').val() === auth.uid)))",
+        ".validate": "newData.hasChildren(['fecha', 'placa', 'items']) && newData.child('fecha').isString() && newData.child('placa').isString()",
+        "items": {
+          "$i": {
+            ".validate": "newData.hasChildren(['elemento', 'estado'])",
+            "estado": {
+              ".validate": "newData.val() === 'Cumple' || newData.val() === 'No cumple' || newData.val() === 'No aplica'"
+            }
+          }
+        },
+        "cerrada": {
+          ".validate": "newData.isBoolean()"
+        },
+        "autorUid": {
+          ".validate": "newData.val() === 'publico' || (auth != null && newData.val() === auth.uid)"
+        }
+      }
+    },
+
+    "usuarios": {
+      ".read": "auth != null && root.child('usuarios').child(auth.uid).child('rol').val() === 'admin'",
+      ".indexOn": ["email", "rol"],
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('usuarios').child(auth.uid).child('rol').val() === 'admin')",
+        ".write": "auth != null && (root.child('usuarios').child(auth.uid).child('rol').val() === 'admin' || (auth.uid === $uid && !root.child('usuarios').exists()))",
+        ".validate": "newData.hasChildren(['email', 'rol']) && newData.child('email').isString()",
+        "rol": {
+          ".validate": "newData.val() === 'admin' || newData.val() === 'operador'"
+        }
+      }
+    },
+
+    "configuracion": {
+      ".read": "auth != null && root.child('usuarios').child(auth.uid).child('rol').val() === 'admin'",
+      ".write": "auth != null && root.child('usuarios').child(auth.uid).child('rol').val() === 'admin'"
+    }
+  }
+}

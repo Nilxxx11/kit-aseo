@@ -1,0 +1,15 @@
+{
+  "name": "kit-aseo-app",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Aplicación corporativa de inspección de kits de aseo de vehículos con Firebase Realtime Database, panel de administración y dashboard analítico.",
+  "scripts": {
+    "admin": "node scripts/create-admin.mjs",
+    "serve": "python3 -m http.server 8080",
+    "emulators": "firebase emulators:start"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.7.0"
+  }
+}

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Aplicación corporativa de inspección de kits de aseo de vehículos — Plan Estratégico de Seguridad Vial. FT-SV-016">
+<meta name="theme-color" content="#0060b0">
+<title>Inspección kit de aseo · FT-SV-016</title>
+
+<link rel="icon" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css">
+
+<!-- Firebase (SDK compat, funciona con file:// y con hosting) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js" defer></script>
+<!-- Gráficos y exportación -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" defer></script>
+
+<script src="assets/js/config.js" defer></script>
+<script src="assets/js/store.js" defer></script>
+<script src="assets/js/xlsx-export.js" defer></script>
+<script src="assets/js/dashboard.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+</head>
+<body>
+
+<div class="app">
+  <!-- ==================== SIDEBAR ==================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <img id="brandLogo" src="assets/logo.png" alt="Logotipo de la empresa">
+      <div>
+        <div class="bt" id="brandTag">Seguridad vial</div>
+        <div class="bn" id="brandName">HB</div>
+        <div class="bs" id="brandSlogan">Avanzamos contigo</div>
+      </div>
+    </div>
+
+    <nav class="nav" id="nav" aria-label="Navegación principal">
+      <div class="nav-label">Operación</div>
+      <button data-view="inspeccion" aria-current="page">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        <span>Nueva inspección</span>
+      </button>
+      <button data-view="registros">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h12"/><circle cx="19" cy="18" r="2"/></svg>
+        <span>Registros</span><span class="badge" id="navCount" hidden>0</span>
+      </button>
+
+      <div class="nav-label" id="navAnalysisLabel">Análisis</div>
+      <button data-view="dashboard">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>
+        <span>Dashboard</span>
+      </button>
+
+      <div class="nav-label" id="navAdminLabel" hidden>Administración</div>
+      <button data-view="admin" id="navAdmin" hidden>
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+        <span>Panel de administración</span>
+      </button>
+    </nav>
+
+    <div class="side-foot">
+      <div class="side-user">
+        <div class="av" id="userAvatar">?</div>
+        <div style="min-width:0">
+          <div class="un" id="userName">Sin sesión</div>
+          <div class="ur" id="userRole">Local</div>
+        </div>
+        <button id="btnSession" title="Iniciar sesión">Entrar</button>
+      </div>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <!-- ==================== MAIN ==================== -->
+  <div class="main">
+    <header class="topbar">
+      <button class="btn ghost sm" id="btnMenu" style="display:none" aria-label="Abrir menú">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <div class="tt">
+        <h1 id="pageTitle">Nueva inspección</h1>
+        <p id="pageSub">Inspección del kit de aseo de vehículos · FT-SV-016</p>
+      </div>
+      <div class="spacer"></div>
+      <span class="pill na" id="modePill" title="Estado de la conexión">Local</span>
+      <button class="btn sec sm only-mobile" id="btnSessionTop" title="Iniciar sesión">Entrar</button>
+      <button class="btn sec sm" id="btnTheme" title="Cambiar tema">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
+        <span class="nowrap">Tema</span>
+      </button>
+    </header>
+
+    <div class="content">
+
+      <!-- ==================== VISTA: INSPECCIÓN ==================== -->
+      <section class="view on" id="view-inspeccion">
+        <div id="bannerZone"></div>
+
+        <div class="card">
+          <div class="card-h">
+            <h2>Inspección de kit de aseo de vehículos</h2>
+            <span class="pill info">FT-SV-016 · v1 · 19/10/2026</span>
+            <span class="sub">Plan Estratégico de Seguridad Vial</span>
+          </div>
+          <div class="card-b">
+            <div class="progress-wrap" style="margin-bottom:6px">
+              <div class="bar" id="progBar" aria-hidden="true"></div>
+              <span class="small muted" id="progTxt">0 de 4 elementos evaluados</span>
+            </div>
+            <div class="row tight" style="margin-top:10px">
+              <span class="pill ok" id="pgOk">Cumple 0</span>
+              <span class="pill open" id="pgBad">No cumple 0</span>
+              <span class="pill na" id="pgNa">No aplica 0</span>
+              <span class="spacer"></span>
+              <span class="small muted" id="progPct">0% evaluado</span>
+            </div>
+          </div>
+        </div>
+
+        <form id="frm" novalidate autocomplete="off">
+          <fieldset>
+            <div class="leg">Datos generales</div>
+            <div class="f-body">
+              <div class="grid-2">
+                <label class="f">Fecha de la inspección
+                  <input type="date" id="fecha" required>
+                </label>
+                <label class="f">Placa / vehículo
+                  <input type="text" id="placa" required autocapitalize="characters" placeholder="Ej. ABC123" maxlength="12">
+                </label>
+              </div>
+              <label class="f">Responsable de la inspección
+                <input type="text" id="resp" required autocomplete="name" placeholder="Nombre de quien realiza la inspección">
+              </label>
+              <label class="f">Nombre del conductor inspeccionado
+                <input type="text" id="cond" required autocomplete="off" placeholder="Nombre del conductor">
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <div class="leg">Elementos a inspeccionar</div>
+            <div class="f-body" id="items"></div>
+          </fieldset>
+
+          <fieldset id="accWrap" hidden>
+            <div class="leg">Acciones correctivas</div>
+            <div class="f-body" id="acc"></div>
+          </fieldset>
+
+          <fieldset>
+            <div class="leg">Observaciones</div>
+            <div class="f-body">
+              <label class="f">Observaciones generales
+                <textarea id="obs" placeholder="Novedades adicionales, condiciones del vehículo, compromisos, etc."></textarea>
+              </label>
+            </div>
+          </fieldset>
+
+          <p class="err-msg" id="err" role="alert"></p>
+          <div class="row noprint">
+            <button class="btn" type="submit" id="btnSave">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+              Guardar inspección
+            </button>
+            <button class="btn sec" type="button" id="btnReset">Limpiar formulario</button>
+            <span class="spacer"></span>
+            <span class="small muted" id="saveHint"></span>
+          </div>
+        </form>
+      </section>
+
+      <!-- ==================== VISTA: REGISTROS ==================== -->
+      <section class="view" id="view-registros">
+        <div id="bannerZone2"></div>
+
+        <div class="grid g4" style="margin-bottom:16px">
+          <div class="kpi"><div class="k-label">Inspecciones</div><div class="k-val" id="s-t">0</div><div class="k-sub" id="s-t-sub">En total</div></div>
+          <div class="kpi bad"><div class="k-label">Acciones abiertas</div><div class="k-val" id="s-o">0</div><div class="k-sub">Requieren seguimiento</div></div>
+          <div class="kpi ok"><div class="k-label">Conformes</div><div class="k-val" id="s-c">0</div><div class="k-sub">Sin hallazgos</div></div>
+          <div class="kpi warn"><div class="k-label">Acciones cerradas</div><div class="k-val" id="s-d">0</div><div class="k-sub">Ciclo de cierre</div></div>
+        </div>
+
+        <div class="card noprint">
+          <div class="card-h"><h2>Filtros y exportación</h2><span class="sub" id="filterCount"></span></div>
+          <div class="card-b">
+            <div class="filters lite">
+              <label>Buscar
+                <input type="search" id="q" placeholder="Placa, conductor o responsable" aria-label="Buscar registros">
+              </label>
+              <label>Estado
+                <select id="fs" aria-label="Filtrar por estado">
+                  <option value="">Todos los estados</option>
+                  <option value="ok">Conforme</option>
+                  <option value="open">Acciones abiertas</option>
+                  <option value="done">Acciones cerradas</option>
+                </select>
+              </label>
+              <label>Desde
+                <input type="date" id="fd">
+              </label>
+            </div>
+            <div class="filters lite" style="margin-top:10px">
+              <label>Hasta
+                <input type="date" id="fh">
+              </label>
+              <label>Responsable
+                <input type="text" id="fr" placeholder="Todos" list="dlResp">
+                <datalist id="dlResp"></datalist>
+              </label>
+              <div class="row" style="align-items:end">
+                <button class="btn sec sm" id="btnClearFilters">Limpiar</button>
+                <button class="btn sec sm" id="btnPrint">Imprimir</button>
+                <button class="btn sec sm" id="btnCsv">CSV</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="list" style="margin-top:16px"></div>
+      </section>
+
+      <!-- ==================== VISTA: DASHBOARD ==================== -->
+      <section class="view" id="view-dashboard">
+        <div id="bannerZone3"></div>
+
+        <div class="card noprint">
+          <div class="card-h">
+            <h2>Periodo de análisis</h2>
+            <span class="sub" id="dashRange">Todo el histórico</span>
+          </div>
+          <div class="card-b">
+            <div class="filters lite">
+              <label>Desde <input type="date" id="dFrom"></label>
+              <label>Hasta <input type="date" id="dTo"></label>
+              <div class="row" style="align-items:end">
+                <button class="btn sec sm" data-range="30">30 días</button>
+                <button class="btn sec sm" data-range="90">90 días</button>
+                <button class="btn sec sm" data-range="365">12 meses</button>
+                <button class="btn sec sm" id="dAll">Todo</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid g4" id="dashKpis" style="margin-bottom:16px"></div>
+
+        <div class="grid g2">
+          <div class="card">
+            <div class="card-h"><h2>Inspecciones por mes</h2><span class="sub">Tendencia del periodo</span></div>
+            <div class="card-b"><div class="chart-box"><canvas id="chTrend"></canvas></div></div>
+          </div>
+          <div class="card">
+            <div class="card-h"><h2>Estado de los elementos</h2><span class="sub">Cumple / No cumple / No aplica</span></div>
+            <div class="card-b"><div class="chart-box"><canvas id="chEstados"></canvas></div></div>
+          </div>
+        </div>
+
+        <div class="grid g2">
+          <div class="card">
+            <div class="card-h"><h2>Hallazgos por elemento del kit</h2><span class="sub">Veces marcado «No cumple»</span></div>
+            <div class="card-b"><div class="chart-box short"><canvas id="chElementos"></canvas></div></div>
+          </div>
+          <div class="card">
+            <div class="card-h"><h2>Cumplimiento por responsable</h2><span class="sub">% de elementos conformes</span></div>
+            <div class="card-b"><div class="chart-box short"><canvas id="chResponsables"></canvas></div></div>
+          </div>
+        </div>
+
+        <div class="grid g2">
+          <div class="card">
+            <div class="card-h"><h2>Vehículos con más hallazgos</h2><span class="sub">Placas</span></div>
+            <div class="card-b"><div class="chart-box short"><canvas id="chPlacas"></canvas></div></div>
+          </div>
+          <div class="card">
+            <div class="card-h"><h2>Acciones correctivas</h2><span class="sub">Abiertas vs. cerradas por mes</span></div>
+            <div class="card-b"><div class="chart-box short"><canvas id="chAcciones"></canvas></div></div>
+          </div>
+        </div>
+
+        <div class="grid g2">
+          <div class="card">
+            <div class="card-h"><h2>Detalle por elemento del kit</h2><span class="sub">Tasa de cumplimiento</span></div>
+            <div class="card-b table-wrap"><table class="item-cmp" id="tblElementos"></table></div>
+          </div>
+          <div class="card">
+            <div class="card-h"><h2>Ranking de responsables</h2><span class="sub">Volumen y hallazgos</span></div>
+            <div class="card-b table-wrap"><table class="item-cmp" id="tblResponsables"></table></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><h2>Últimas inspecciones</h2><span class="sub">10 más recientes del periodo</span></div>
+          <div class="card-b table-wrap"><table class="data-table" id="tblRecientes"></table></div>
+        </div>
+      </section>
+
+      <!-- ==================== VISTA: ADMIN ==================== -->
+      <section class="view" id="view-admin">
+        <div id="bannerZone4"></div>
+
+        <div class="card" id="adminLock" hidden>
+          <div class="card-b center" style="padding:40px 20px">
+            <div style="font-size:2.4rem">🔒</div>
+            <h2 style="margin:8px 0 6px">Acceso restringido</h2>
+            <p class="muted" style="max-width:520px;margin:0 auto 16px">Esta sección requiere una cuenta con rol <b>administrador</b>. Inicia sesión con un usuario administrador para ver y descargar todos los registros en Excel.</p>
+            <button class="btn" id="btnLoginAdmin">Iniciar sesión como administrador</button>
+          </div>
+        </div>
+
+        <div id="adminContent" hidden>
+          <div class="grid g4" style="margin-bottom:16px">
+            <div class="kpi"><div class="k-label">Registros totales</div><div class="k-val" id="a-t">0</div><div class="k-sub">En la base de datos</div></div>
+            <div class="kpi bad"><div class="k-label">Acciones abiertas</div><div class="k-val" id="a-o">0</div><div class="k-sub">Pendientes de cierre</div></div>
+            <div class="kpi ok"><div class="k-label">Vehículos</div><div class="k-val" id="a-u">0</div><div class="k-sub">Placas inspeccionadas</div></div>
+            <div class="kpi warn"><div class="k-label">Hallazgos</div><div class="k-val" id="a-h">0</div><div class="k-sub">Elementos «No cumple»</div></div>
+          </div>
+
+          <div class="card">
+            <div class="card-h">
+              <h2>Registros de inspecciones</h2>
+              <span class="sub" id="adminCount"></span>
+              <div class="spacer"></div>
+              <div class="row noprint">
+                <button class="btn sec sm" id="btnXlsx">Descargar XLSX</button>
+                <button class="btn sec sm" id="btnCsvAdmin">CSV</button>
+              </div>
+            </div>
+            <div class="card-b">
+              <div class="filters lite noprint">
+                <label>Buscar<input type="search" id="aq" placeholder="Placa, conductor o responsable"></label>
+                <label>Estado<select id="afs">
+                  <option value="">Todos</option><option value="ok">Conforme</option>
+                  <option value="open">Acciones abiertas</option><option value="done">Acciones cerradas</option>
+                </select></label>
+                <label>Desde<input type="date" id="afd"></label>
+                <label>Hasta<input type="date" id="afh"></label>
+              </div>
+            </div>
+            <div class="card-b table-wrap" style="padding-top:0">
+              <table class="data-table" id="adminTable">
+                <thead><tr>
+                  <th>Fecha</th><th>Placa</th><th>Conductor</th><th>Responsable</th>
+                  <th>Cumplimiento</th><th>Hallazgos</th><th>Estado</th><th>Acciones</th>
+                </tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="grid g2" style="margin-top:16px">
+            <div class="card">
+              <div class="card-h"><h2>Configuración de la aplicación</h2><span class="sub">Identidad y datos</span></div>
+              <div class="card-b">
+                <label class="f">Nombre corto de la empresa<input type="text" id="cfgName" placeholder="HB"></label>
+                <label class="f">Nombre completo<input type="text" id="cfgFull" placeholder="Higiene Básica"></label>
+                <label class="f">Eslogan<input type="text" id="cfgSlogan" placeholder="Avanzamos contigo"></label>
+                <label class="f">Código de la forma<input type="text" id="cfgCode" placeholder="FT-SV-016"></label>
+                <div class="row">
+                  <button class="btn sm" id="btnSaveCfg">Guardar configuración</button>
+                  <span class="small muted" id="cfgMsg"></span>
+                </div>
+                <hr style="border:0;border-top:1px solid var(--line);margin:16px 0">
+                <h3 style="font-size:.95rem;margin-bottom:8px">Estado de la conexión</h3>
+                <div id="cfgStatus" class="small muted"></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-h"><h2>Acceso del administrador</h2><span class="sub">Única cuenta del sistema</span></div>
+              <div class="card-b">
+                <p class="small muted" style="margin-top:0">
+                  El <b>formulario de inspección es público</b>: cualquier persona puede registrar un kit
+                  sin iniciar sesión. Sólo existe una cuenta de administrador, que es la única
+                  autorizada para consultar el historial, los reportes y exportar a Excel.
+                </p>
+                <div class="row">
+                  <button class="btn primary sm" id="btnLoginAdmin2">Iniciar sesión de administrador</button>
+                  <span class="small muted" id="adminInfo"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== BOTTOM NAV (móvil) ==================== -->
+<nav class="bottomnav" id="bottomnav" aria-label="Navegación">
+  <button data-view="inspeccion" aria-current="page">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+    <span>Inspección</span>
+  </button>
+  <button data-view="registros">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h12"/><circle cx="19" cy="18" r="2"/></svg>
+    <span>Registros</span>
+  </button>
+  <button data-view="dashboard">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>
+    <span>Dashboard</span>
+  </button>
+  <button data-view="admin" id="bottomAdmin" hidden>
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></svg>
+    <span>Admin</span>
+  </button>
+</nav>
+
+<!-- ==================== MODAL LOGIN ==================== -->
+<div class="modal" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+  <div class="backdrop" data-close></div>
+  <div class="box">
+    <h3 id="loginTitle">Acceso del administrador</h3>
+    <div class="mb">
+      <p class="small muted" style="margin-bottom:14px">El formulario de inspección es <b>público</b>: cualquiera puede registrar un kit. Esta cuenta es la única que puede ver el historial, los reportes y exportar a Excel.</p>
+      <label class="f">Correo electrónico<input type="email" id="liEmail" autocomplete="username" placeholder="admin@empresa.com"></label>
+      <label class="f">Contraseña<input type="password" id="liPass" autocomplete="current-password" placeholder="••••••••"></label>
+      <p class="err-msg" id="liErr"></p>
+    </div>
+    <div class="mf">
+      <button class="btn ghost" data-close>Cancelar</button>
+      <button class="btn" id="liSubmit">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+</body>
+</html>
